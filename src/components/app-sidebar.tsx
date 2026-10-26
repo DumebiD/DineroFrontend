@@ -196,7 +196,7 @@ const adminItems = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {pathname} = useLocation()
-  console.log(pathname)
+  // console.log(pathname)
 
   return (
     <Sidebar collapsible="icon" {...props}>

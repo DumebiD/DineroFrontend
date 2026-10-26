@@ -30,7 +30,7 @@ export default function PaymentRules() {
             <div className="flex gap-4">
                 {
                     cardDetails.map((card) => (
-                        <Card className="basis-lg p-4">
+                        <Card className="basis-lg p-4" key={card.title}>
                             <CardTitle className="flex justify-between items-center text-gray-400">{card.title}<card.icon className="text-gray-500" /></CardTitle>
                             <p className="text-2xl">
                                 {card.number}
