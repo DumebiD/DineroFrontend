@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input"
 import Artwork from "@/assets/images/DineroAuthFormsArtwork.png"
 import { toast } from "../components/ui/toast"
-import { apiClient } from "@/api/client"
 import { useAuth } from "@/context/auth/AuthProvider"
 
 export function SignupForm({

@@ -1,9 +1,7 @@
 import { LoginForm } from "@/pages/login-form";
 import { SignupForm } from "@/pages/signup-form";
 import { GuestRoute, ProtectedRoute } from "@/context/auth/RouteGuards";
-import Layout from "@/layouts/Layout";
 import PaymentRules from "@/pages/admin/paymentRules";
-import PaymentPage from "@/pages/user";
 import Payment from "@/pages/user/payment";
 
 const appRoutes = [

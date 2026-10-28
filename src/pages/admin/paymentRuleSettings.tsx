@@ -119,14 +119,14 @@ type Rule = {
 }
 
 // order the rules by priority
-const data: Rule[] = [
-  { id: "1", name: "High-value payment approval", summary: "Amount > $10,000 · Currency is USD", meta: "8 matched today", action: "Require approval", priority: 1, icon: ShieldCheck, active: true, approverGroup: "finance", conditions: { all: [{ id: "001", field: "amount", op: "gt", value: 100 }] }, flatAmount: 500, percent: 0.5 },
-  { id: "2", name: "Block restricted destinations", summary: "Recipient country is on restricted list", meta: "3 matched today", action: "Block payment", priority: 2, approverGroup: "risk team", icon: Ban, active: true, flatAmount: 500, percent: 0.5 },
-  { id: "3", name: "Domestic ACH routing", summary: "Country is US · Currency is USD", meta: "24 matched today", action: "Route via ACH", priority: 3, approverGroup: "finance", icon: GitBranch, active: true, flatAmount: 500, percent: 0.5 },
-  { id: "4", name: "International wire routing", approverGroup: "finance", summary: "Recipient country is not US", meta: "4 matched today", priority: 4, action: "Route via wire", icon: Globe, active: true, flatAmount: 500, percent: 0.5 },
-  { id: "5", name: "New recipient review", summary: "Recipient age is less than 7 days", meta: "Paused · no evaluations", action: "Require approval", priority: 5, approverGroup: "finance", icon: ShieldCheck, active: false, flatAmount: 500, percent: 0.5 },
-  { id: "6", name: "Weekend payment hold", summary: "Day is Saturday or Sunday", meta: "Paused · no evaluations", action: "Schedule next day", priority: 6, approverGroup: "finance", icon: CalendarClock, active: false, flatAmount: 500, percent: 0.5 },
-]
+// const data: Rule[] = [
+//   { id: "1", name: "High-value payment approval", summary: "Amount > $10,000 · Currency is USD", meta: "8 matched today", action: "Require approval", priority: 1, icon: ShieldCheck, active: true, approverGroup: "finance", conditions: { all: [{ id: "001", field: "amount", op: "gt", value: 100 }] }, flatAmount: 500, percent: 0.5 },
+//   { id: "2", name: "Block restricted destinations", summary: "Recipient country is on restricted list", meta: "3 matched today", action: "Block payment", priority: 2, approverGroup: "risk team", icon: Ban, active: true, flatAmount: 500, percent: 0.5 },
+//   { id: "3", name: "Domestic ACH routing", summary: "Country is US · Currency is USD", meta: "24 matched today", action: "Route via ACH", priority: 3, approverGroup: "finance", icon: GitBranch, active: true, flatAmount: 500, percent: 0.5 },
+//   { id: "4", name: "International wire routing", approverGroup: "finance", summary: "Recipient country is not US", meta: "4 matched today", priority: 4, action: "Route via wire", icon: Globe, active: true, flatAmount: 500, percent: 0.5 },
+//   { id: "5", name: "New recipient review", summary: "Recipient age is less than 7 days", meta: "Paused · no evaluations", action: "Require approval", priority: 5, approverGroup: "finance", icon: ShieldCheck, active: false, flatAmount: 500, percent: 0.5 },
+//   { id: "6", name: "Weekend payment hold", summary: "Day is Saturday or Sunday", meta: "Paused · no evaluations", action: "Schedule next day", priority: 6, approverGroup: "finance", icon: CalendarClock, active: false, flatAmount: 500, percent: 0.5 },
+// ]
 
 const tabs = ["All rules", "Active", "Inactive"] as const
 type Tab = (typeof tabs)[number]

@@ -64,13 +64,13 @@ const chartConfig = {
 export function ChartBarInteractive() {
     React.useState<keyof typeof chartConfig>("desktop")
 
-  const total = React.useMemo(
-    () => ({
-      desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
-      mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
-    }),
-    []
-  )
+  // const total = React.useMemo(
+  //   () => ({
+  //     desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
+  //     mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
+  //   }),
+  //   []
+  // )
 
   return (
     <Card className="py-0">
