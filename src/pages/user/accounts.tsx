@@ -47,8 +47,8 @@ export interface Wallet {
     purpose: string;
     accountLast4: string;
     currency: string; // ISO code, e.g. "USD"
-    availableBalance: number;
-    reservedBalance: number;
+    availableBalance: string;
+    reservedBalance: string;
     status: WalletStatus;
     isDefault: boolean;
     spendingAccess: string;
@@ -64,14 +64,14 @@ export interface CreateWalletInput {
 }
 
 export async function createWallet(input: CreateWalletInput): Promise<Wallet> {
-    try{
+    try {
         const { data } = await apiClient.post<Wallet>("/wallet", {
-          ...input,
-          name: input.name.trim(),
-          purpose: input.purpose.trim(),
+            ...input,
+            name: input.name.trim(),
+            purpose: input.purpose.trim(),
         });
         return data;
-    }catch(e){
+    } catch (e) {
         console.log(e)
         throw new Error("Failed to create wallet")
     }
@@ -111,8 +111,8 @@ const INITIAL_WALLETS: Wallet[] = [
         purpose: "Everyday payments",
         accountLast4: "4821",
         currency: "USD",
-        availableBalance: 186240,
-        reservedBalance: 24680,
+        availableBalance: "186240",
+        reservedBalance: "24680",
         status: "active",
         isDefault: true,
         spendingAccess: "Finance team",
@@ -125,8 +125,8 @@ const INITIAL_WALLETS: Wallet[] = [
         purpose: "Business savings",
         accountLast4: "9016",
         currency: "USD",
-        availableBalance: 42320,
-        reservedBalance: 0,
+        availableBalance: "42320",
+        reservedBalance: "0",
         status: "active",
         isDefault: false,
         spendingAccess: "Finance team",
@@ -139,8 +139,8 @@ const INITIAL_WALLETS: Wallet[] = [
         purpose: "Team spending",
         accountLast4: "6430",
         currency: "USD",
-        availableBalance: 20000,
-        reservedBalance: 0,
+        availableBalance: "20000",
+        reservedBalance: "0",
         status: "active",
         isDefault: false,
         spendingAccess: "Team leads",
@@ -180,21 +180,19 @@ type StatusFilter = "active" | "archived" | "all";
 
 export default function Accounts() {
     const [wallets, setWallets] = useState<Wallet[]>([]);
-    const [selectedId, setSelectedId] = useState<string | null>(
-        INITIAL_WALLETS[0]?.id ?? null,
-    );
+    const [selectedId, setSelectedId] = useState<string | null>(null);
     const [query, setQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("active");
 
     // fetch all the wallets belonging to the user
     useEffect(() => {
         async function fetchData() {
-          const data = await apiClient.get<Wallet[]>("/wallet")
-          setWallets(data.data)
-          setSelectedId(data.data[0]?.id ?? "")
+            const data = await apiClient.get<Wallet[]>("/wallet")
+            setWallets(data.data)
+            setSelectedId(data.data[0]?.id ?? "")
         }
         fetchData()
-      }, [])
+    }, [])
 
     const visible = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -371,7 +369,7 @@ function AddFundsDialog({
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const value = amount;
-        console.log("value",value)
+        console.log("value", value)
         if (!Number.isFinite(Number(value)) || Number(value) <= 0) {
             setError("Enter an amount greater than zero.");
             return;
@@ -495,10 +493,10 @@ function WalletRow({
 
                 <span className="text-right">
                     <span className="block text-base font-semibold tabular-nums text-slate-900">
-                        {money(wallet.availableBalance, wallet.currency)}
+                        {money(Number(wallet.availableBalance), wallet.currency)}
                     </span>
                     <span className="block text-xs tabular-nums text-slate-500">
-                        {money(wallet.reservedBalance, wallet.currency)} reserved
+                        {money(Number(wallet.reservedBalance), wallet.currency)} reserved
                     </span>
                 </span>
 
@@ -513,7 +511,9 @@ function WalletRow({
 /* -------------------------------------------------------------------------- */
 
 function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated: Wallet) => void; }) {
-    const total = wallet.availableBalance + wallet.reservedBalance;
+    console.log("avail", typeof wallet.availableBalance, wallet.reservedBalance)
+    const total = Number(wallet.availableBalance) + Number(wallet.reservedBalance);
+    console.log("tot", total)
 
     return (
         <aside className="rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -537,7 +537,7 @@ function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated
 
                 <p className="mt-5 text-xs text-slate-500">Available to spend</p>
                 <p className="mt-1 text-4xl font-semibold tracking-tight tabular-nums text-slate-900">
-                    {money(wallet.availableBalance, wallet.currency)}
+                    {money(Number(wallet.availableBalance), wallet.currency)}
                 </p>
                 <p className="mt-2 text-xs text-slate-500">
                     {wallet.currency} · Ready for your next payment
@@ -547,7 +547,7 @@ function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated
                     <div className="flex justify-between">
                         <dt className="text-slate-500">Reserved for payments</dt>
                         <dd className="font-medium tabular-nums text-slate-900">
-                            {money(wallet.reservedBalance, wallet.currency)}
+                            {money(Number(wallet.reservedBalance), wallet.currency)}
                         </dd>
                     </div>
                     <div className="flex justify-between">
