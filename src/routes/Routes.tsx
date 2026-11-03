@@ -3,6 +3,7 @@ import { SignupForm } from "@/pages/signup-form";
 import { GuestRoute, ProtectedRoute } from "@/context/auth/RouteGuards";
 import PaymentRules from "@/pages/admin/paymentRules";
 import Payment from "@/pages/user/payment";
+import Accounts from "@/pages/user/accounts";
 
 const appRoutes = [
     {
@@ -13,6 +14,7 @@ const appRoutes = [
             {index: true, element: <Payment/>},
             {path: "rules", element: <PaymentRules/>},
             {path: "payments", element: <Payment/>},
+            {path: "accounts", element: <Accounts/>},
         ]
     },
     {

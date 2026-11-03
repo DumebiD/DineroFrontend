@@ -35,7 +35,7 @@ import { toast } from "@/components/ui/toast"
 // numeric: amount, monthly volume, transaction count, OPERATORS: greater than, less than, btwn
 // 1. Define fields and operators as const arrays
 export const NUMERIC_FIELDS = ['amount'] as const;
-export const CATEGORICAL_FIELDS = ['channel', 'destination_type'] as const;
+export const CATEGORICAL_FIELDS = ['currency','channel', 'destination_type'] as const;
 
 export type NumericField = typeof NUMERIC_FIELDS[number];
 export type CategoricalField = typeof CATEGORICAL_FIELDS[number];
@@ -51,6 +51,7 @@ export type Operator = NumericOp | CategoricalOp;
 // 2. Map raw field keys to human-readable UI labels
 export const FIELD_LABELS: Record<Field, string> = {
   amount: 'Amount',
+  currency: 'Currency',
   channel: 'Channel',
   destination_type: 'Destination Type',
 };
@@ -143,7 +144,6 @@ export default function PaymentRulesSettings() {
   useEffect(() => {
     async function fetchData() {
       const data = await apiClient.get<Rule[]>("/rule")
-      console.log("data", data)
       setInitialRules(data.data)
       setRules(data.data)
       setSelectedId(data.data[0]?.id ?? "")
