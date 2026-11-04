@@ -37,6 +37,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { apiClient } from "@/api/client";
+import { toast } from "@/components/ui/toast";
 
 export type WalletStatus = "active" | "archived";
 
@@ -515,6 +516,13 @@ function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated
     const total = Number(wallet.availableBalance) + Number(wallet.reservedBalance);
     console.log("tot", total)
 
+    async function CopyWalletReference(){
+        await navigator.clipboard.writeText(wallet.reference)
+        toast.add({
+            description: "Wallet reference copied to clipboard"
+        })
+    }
+
     return (
         <aside className="rounded-xl border border-slate-200 bg-white shadow-sm">
             <div className="p-6">
@@ -580,7 +588,7 @@ function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated
                         <button
                             type="button"
                             aria-label="Copy wallet ID"
-                            onClick={() => navigator.clipboard.writeText(wallet.reference)}
+                            onClick={() => CopyWalletReference(wallet.reference)}
                             className="rounded p-0.5 text-slate-400 hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-emerald-600"
                         >
                             <Copy className="size-3.5" />

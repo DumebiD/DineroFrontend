@@ -35,7 +35,7 @@ import { toast } from "@/components/ui/toast"
 // numeric: amount, monthly volume, transaction count, OPERATORS: greater than, less than, btwn
 // 1. Define fields and operators as const arrays
 export const NUMERIC_FIELDS = ['amount'] as const;
-export const CATEGORICAL_FIELDS = ['currency','channel', 'destination_type'] as const;
+export const CATEGORICAL_FIELDS = ['currency', 'channel', 'destination_type'] as const;
 
 export type NumericField = typeof NUMERIC_FIELDS[number];
 export type CategoricalField = typeof CATEGORICAL_FIELDS[number];
@@ -167,7 +167,7 @@ export default function PaymentRulesSettings() {
   const createRule = () => {
     // const newId = rules.reduce((max, r) => Math.max(max, r.id), 0) + 1;
     // const priority = rules[rules.length - 1].priority + 1
-    const newId = crypto.randomUUID(); 
+    const newId = crypto.randomUUID();
     const priority = rules.reduce((max, r) => Math.max(max, r.priority), 0) + 1;
 
     const newRule: Rule = {
@@ -257,6 +257,18 @@ export default function PaymentRulesSettings() {
   // Deep-compares 'rules' and 'initialRules' by value, not by reference
   const isDirty = useMemo(() => !isEqual(rules, initialRules), [rules, initialRules]);
 
+  function toRulePayload(rule: Rule) {
+    const {
+      name, summary, active, priority, transactionType, action,
+      approverGroup, conditions, flatAmount, percent, minFee, maxFee,
+    } = rule;
+    return {
+      name, summary, active, priority, transactionType, action,
+      approverGroup, conditions, flatAmount, percent, minFee, maxFee,
+    };
+  }
+
+
   // set the original data to the new ones
   async function PublishChanges(event: React.SubmitEvent<HTMLFormElement>, ruleToUpdate: Rule) {
     console.log("rule", ruleToUpdate)
@@ -264,7 +276,7 @@ export default function PaymentRulesSettings() {
       event.preventDefault()
       setIsPublishing(true)
       // Send updated draft to API endpoint
-      await apiClient.put(`/rule/${ruleToUpdate.id}`, ruleToUpdate)
+      await apiClient.put(`/rule/${ruleToUpdate.id}`, toRulePayload(ruleToUpdate))
       setInitialRules(rules)
       // add a toast
       toast.add({
