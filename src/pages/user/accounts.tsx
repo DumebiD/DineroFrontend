@@ -516,8 +516,8 @@ function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated
     const total = Number(wallet.availableBalance) + Number(wallet.reservedBalance);
     console.log("tot", total)
 
-    async function CopyWalletReference(){
-        await navigator.clipboard.writeText(wallet.reference)
+    async function CopyWalletReference(reference:string){
+        await navigator.clipboard.writeText(reference)
         toast.add({
             description: "Wallet reference copied to clipboard"
         })
