@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { cn } from "cn";
 import {
-    Clock, Download, Layers, Wallet, WalletCards, type LucideIcon, ArrowLeftRight,
+    Clock, Download, Layers, Wallet, WalletCards, ArrowLeftRight,
     ArrowUpRight,
     ChevronRight,
     Copy,
@@ -167,10 +167,24 @@ function shortDate(iso: string) {
     });
 }
 
-function iconFor(wallet: Wallet): LucideIcon {
-    if (wallet.isDefault) return WalletIcon;
-    if (/save|reserve/i.test(wallet.purpose + wallet.name)) return ShieldCheck;
-    return Users;
+// function iconFor(wallet: Wallet): LucideIcon {
+//     if (wallet.isDefault) return WalletIcon;
+//     if (/save|reserve/i.test(wallet.purpose + wallet.name)) return ShieldCheck;
+//     return Users;
+// }
+
+function WalletGlyph({
+    wallet,
+    className,
+}: {
+    wallet: Wallet;
+    className?: string;
+}) {
+    if (wallet.isDefault) return <WalletIcon className={className} />;
+    if (/save|reserve/i.test(wallet.purpose + wallet.name)) {
+        return <ShieldCheck className={className} />;
+    }
+    return <Users className={className} />;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -448,7 +462,8 @@ function WalletRow({
     selected: boolean;
     onSelect: () => void;
 }) {
-    const Icon = iconFor(wallet);
+    // const Icon = iconFor(wallet);
+
     return (
         <li>
             <button
@@ -462,7 +477,7 @@ function WalletRow({
                         : "hover:bg-slate-50",
                 )}
             >
-                <span
+                {/* <span
                     className={cn(
                         "flex size-9 shrink-0 items-center justify-center rounded-lg",
                         selected
@@ -471,6 +486,14 @@ function WalletRow({
                     )}
                 >
                     <Icon className="size-4" />
+                </span> */}
+                <span className={cn(
+                    "flex size-9 shrink-0 items-center justify-center rounded-lg",
+                    selected
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-slate-100 text-slate-500",
+                )}>
+                    <WalletGlyph wallet={wallet} className="size-4" />
                 </span>
 
                 <span className="min-w-0 flex-1">
@@ -516,7 +539,7 @@ function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated
     const total = Number(wallet.availableBalance) + Number(wallet.reservedBalance);
     console.log("tot", total)
 
-    async function CopyWalletReference(reference:string){
+    async function CopyWalletReference(reference: string) {
         await navigator.clipboard.writeText(reference)
         toast.add({
             description: "Wallet reference copied to clipboard"
