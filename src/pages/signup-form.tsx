@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import Artwork from "@/assets/images/DineroAuthFormsArtwork.png"
 import { toast } from "../components/ui/toast"
 import { useAuth } from "@/context/auth/AuthProvider"
+import axios from "axios"
 
 export function SignupForm({
   className,
@@ -40,11 +41,19 @@ export function SignupForm({
         type: "success",
         description: "Account created successfully"
       })
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e)
+      let message = "An unexpected error occurred";
+
+      if (axios.isAxiosError(e)) {
+        // TypeScript now safely typed 'e' as AxiosError
+        message = e.response?.data?.message || e.message;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
       toast.add({
         type: "error",
-        description: `Failed to create account. ${e.response.data.message}`
+        description: `Failed to create account. ${message}`
       })
 
     }

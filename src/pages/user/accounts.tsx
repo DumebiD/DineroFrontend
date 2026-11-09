@@ -74,7 +74,7 @@ export async function createWallet(input: CreateWalletInput): Promise<Wallet> {
         return data;
     } catch (e) {
         console.log(e)
-        throw new Error("Failed to create wallet")
+        throw new Error("Failed to create wallet", { cause: e })
     }
 
     // --- Local stand-in so the demo works without a backend. Delete this block

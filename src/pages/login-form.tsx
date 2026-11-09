@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import Artwork from "@/assets/images/DineroAuthFormsArtwork.png"
 import { toast } from "../components/ui/toast"
 import { useAuth } from "@/context/auth/AuthProvider"
+import axios from "axios"
 
 export function LoginForm({
   className,
@@ -31,10 +32,18 @@ export function LoginForm({
         type: "success",
         description: "Login successful"
       })
-    } catch (e: any) {
+    } catch (e: unknown) {
+      let message = "An unexpected error occurred";
+
+      if (axios.isAxiosError(e)) {
+        // TypeScript now safely typed 'e' as AxiosError
+        message = e.response?.data?.message || e.message;
+      } else if (e instanceof Error) {
+        message = e.message;
+      }
       toast.add({
         type: "error",
-        description: `Failed to login. ${e.response.data.message}`
+        description: `Failed to login. ${message}`
       })
 
     }
