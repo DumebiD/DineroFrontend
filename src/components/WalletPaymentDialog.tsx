@@ -303,14 +303,18 @@ function clock(totalSeconds: number) {
 
 // Counts down to the server's expiry. The server still enforces expiry, so client clock drift only affects the display.
 function useSecondsLeft(expiresAt: string | undefined) {
+    const now = useNow();
+    return expiresAt ? Math.max(0, Math.ceil((new Date(expiresAt).getTime() - now) / 1000)) : 0;
+}
+
+// A clock that ticks once a second. setState only runs inside the interval callback.
+function useNow(intervalMs = 1000) {
     const [now, setNow] = useState(() => Date.now());
 
     useEffect(() => {
-        if (!expiresAt) return;
-        setNow(Date.now());
-        const id = setInterval(() => setNow(Date.now()), 1000);
+        const id = setInterval(() => setNow(Date.now()), intervalMs);
         return () => clearInterval(id);
-    }, [expiresAt]);
+    }, [intervalMs]);
 
-    return expiresAt ? Math.max(0, Math.ceil((new Date(expiresAt).getTime() - now) / 1000)) : 0;
+    return now;
 }
