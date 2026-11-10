@@ -3,7 +3,6 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { cn } from "cn";
 import {
     Clock, Download, Layers, Wallet, WalletCards, ArrowLeftRight,
-    ArrowUpRight,
     ChevronRight,
     Copy,
     Info,
@@ -14,7 +13,7 @@ import {
     Users,
     Wallet as WalletIcon,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -38,6 +37,8 @@ import {
 } from "@/components/ui/select";
 import { apiClient } from "@/api/client";
 import { toast } from "@/components/ui/toast";
+import { WalletPaymentDialog } from "@/components/WalletPaymentDialog";
+import { paymentApi } from "@/api/payment-api";
 
 export type WalletStatus = "active" | "archived";
 
@@ -198,6 +199,14 @@ export default function Accounts() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [query, setQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("active");
+    
+    const refreshBalances = useCallback(async () => {
+        try {
+            setWallets(await paymentApi.listWallets());
+        } catch {
+            // Keep showing the old balances; the next page load will correct them.
+        }
+    }, []);
 
     // fetch all the wallets belonging to the user
     useEffect(() => {
@@ -350,7 +359,7 @@ export default function Accounts() {
 
                             {/* Detail panel */}
                             {selected ? (
-                                <WalletDetail wallet={selected} onFunded={handleFunded} />
+                                <WalletDetail wallet={selected} onFunded={handleFunded} wallets={wallets} refreshBalances={refreshBalances}/>
                             ) : (
                                 <aside className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">
                                     Select a wallet to see its details.
@@ -534,10 +543,11 @@ function WalletRow({
 /* Detail panel                                                               */
 /* -------------------------------------------------------------------------- */
 
-function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated: Wallet) => void; }) {
+function WalletDetail({ wallet, onFunded, wallets, refreshBalances }: { wallet: Wallet, onFunded: (updated: Wallet) => void, wallets: Wallet[], refreshBalances: ()=> void }) {
     console.log("avail", typeof wallet.availableBalance, wallet.reservedBalance)
     const total = Number(wallet.availableBalance) + Number(wallet.reservedBalance);
     console.log("tot", total)
+    
 
     async function CopyWalletReference(reference: string) {
         await navigator.clipboard.writeText(reference)
@@ -597,9 +607,10 @@ function WalletDetail({ wallet, onFunded }: { wallet: Wallet, onFunded: (updated
                     <Button variant="outline">
                         <ArrowLeftRight className="size-4" /> Transfer
                     </Button>
-                    <Button variant="outline">
+                    {/* <Button variant="outline">
                         <ArrowUpRight className="size-4" /> Pay
-                    </Button>
+                    </Button> */}
+                    <WalletPaymentDialog wallets={wallets} onCompleted={refreshBalances} />
                 </div>
             </div>
 
